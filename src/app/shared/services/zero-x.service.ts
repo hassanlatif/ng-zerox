@@ -16,13 +16,14 @@ import { contractAddresses } from '../configs/contracts';
 import { PrintUtils } from '../utils/print_utils';
 import { providerEngine } from './provider_engine';
 import { getRandomFutureDateInSeconds } from '../utils/utils';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ZeroXService {
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   async createOrder() {
     PrintUtils.printScenario('Create Order');
@@ -33,23 +34,26 @@ export class ZeroXService {
     // account information, balances, general contract logs
     const web3Wrapper = new Web3Wrapper(providerEngine);
     // const [maker, taker] = await web3Wrapper.getAvailableAddressesAsync();
-    const maker = '0x00c97B9efa7ED5712B835F2635A388CF8631f109';
+    const addresses = await web3Wrapper.getAvailableAddressesAsync();
+    console.log(addresses);
+
+    const maker = '0x00c97b9efa7ed5712b835f2635a388cf8631f109';
     const taker = NULL_ADDRESS;
 
     const zrxTokenAddress = contractAddresses.zrxToken;
     const etherTokenAddress = contractAddresses.etherToken;
     const printUtils = new PrintUtils(
-        web3Wrapper,
-        contractWrappers,
-        { maker, taker },
-        { WETH: etherTokenAddress, ZRX: zrxTokenAddress },
+      web3Wrapper,
+      contractWrappers,
+      { maker, taker },
+      { WETH: etherTokenAddress, ZRX: zrxTokenAddress },
     );
     printUtils.printAccounts();
 
     // the amount the maker is selling of maker asset
     const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(5), DECIMALS);
     // the amount the maker wants of taker asset
-    const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.1), DECIMALS);
+    const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
     // 0x v2 uses hex encoded asset data strings to encode all the information needed to identify an asset
     const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
     const takerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
@@ -58,31 +62,10 @@ export class ZeroXService {
 
     // Allow the 0x ERC20 Proxy to move ZRX on behalf of makerAccount
     const makerZRXApprovalTxHash = await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
-        zrxTokenAddress,
-        maker,
+      zrxTokenAddress,
+      maker,
     );
     await printUtils.awaitTransactionMinedSpinnerAsync('Maker ZRX Approval', makerZRXApprovalTxHash);
-
-    // Allow the 0x ERC20 Proxy to move WETH on behalf of takerAccount
-    const takerWETHApprovalTxHash = await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
-        etherTokenAddress,
-        taker,
-    );
-    await printUtils.awaitTransactionMinedSpinnerAsync('Taker WETH Approval', takerWETHApprovalTxHash);
-
-    // Convert ETH into WETH for taker by depositing ETH into the WETH contract
-    const takerWETHDepositTxHash = await contractWrappers.etherToken.depositAsync(
-        etherTokenAddress,
-        takerAssetAmount,
-        taker,
-    );
-    await printUtils.awaitTransactionMinedSpinnerAsync('Taker WETH Deposit', takerWETHDepositTxHash);
-
-    PrintUtils.printData('Setup', [
-        ['Maker ZRX Approval', makerZRXApprovalTxHash],
-        ['Taker WETH Approval', takerWETHApprovalTxHash],
-        ['Taker WETH Deposit', takerWETHDepositTxHash],
-    ]);
 
     // Set up the Order and fill it
     const randomExpiration = getRandomFutureDateInSeconds();
@@ -90,19 +73,19 @@ export class ZeroXService {
 
     // Create the order
     const order: Order = {
-        exchangeAddress,
-        makerAddress: maker,
-        takerAddress: NULL_ADDRESS,
-        senderAddress: NULL_ADDRESS,
-        feeRecipientAddress: NULL_ADDRESS,
-        expirationTimeSeconds: randomExpiration,
-        salt: generatePseudoRandomSalt(),
-        makerAssetAmount,
-        takerAssetAmount,
-        makerAssetData,
-        takerAssetData,
-        makerFee: ZERO,
-        takerFee: ZERO,
+      exchangeAddress,
+      makerAddress: maker,
+      takerAddress: NULL_ADDRESS,
+      senderAddress: NULL_ADDRESS,
+      feeRecipientAddress: NULL_ADDRESS,
+      expirationTimeSeconds: randomExpiration,
+      salt: generatePseudoRandomSalt(),
+      makerAssetAmount,
+      takerAssetAmount,
+      makerAssetData,
+      takerAssetData,
+      makerFee: ZERO,
+      takerFee: ZERO,
     };
 
     printUtils.printOrder(order);
@@ -116,17 +99,7 @@ export class ZeroXService {
     const signature = await signatureUtils.ecSignHashAsync(providerEngine, orderHashHex, maker);
     const signedOrder = { ...order, signature };
 
-    // Validate the order is Fillable before calling fillOrder
-    // This checks both the maker and taker balances and allowances to ensure it is fillable
-    // up to takerAssetAmount
-    await contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(signedOrder, takerAssetAmount, taker);
-
-    // Fill the Order via 0x Exchange contract
-    txHash = await contractWrappers.exchange.fillOrderAsync(signedOrder, takerAssetAmount, taker, {
-        gasLimit: TX_DEFAULTS.gas,
-    });
-    txReceipt = await printUtils.awaitTransactionMinedSpinnerAsync('fillOrder', txHash);
-    printUtils.printTransaction('fillOrder', txReceipt, [['orderHash', orderHashHex]]);
+    this.httpClient.post<any>('http://test-marketplace.apollo.gg/v2/order', signedOrder).subscribe(result => console.log(result));
 
     // Print the Balances
     await printUtils.fetchAndPrintContractBalancesAsync();

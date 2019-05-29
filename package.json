@@ -13,7 +13,7 @@
   "dependencies": {
     "0x.js": "^6.0.7",
     "@0x/abi-gen-wrappers": "^4.3.0",
-    "@0x/connect": "^5.0.6",
+    "@0x/connect": "^5.0.10",
     "@0x/contract-addresses": "^2.3.1",
     "@0x/contract-artifacts": "^1.5.1",
     "@0x/subproviders": "^4.0.6",
@@ -28,9 +28,9 @@
     "@angular/router": "~7.2.0",
     "cli-table": "^0.3.1",
     "copyfiles": "^2.0.0",
+    "core-js": "^2.5.4",
     "lodash": "^4.17.5",
     "ora": "^3.4.0",
-    "core-js": "^2.5.4",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
@@ -38,6 +38,8 @@
   "devDependencies": {
     "@0x/dev-utils": "^2.2.2",
     "@0x/tslint-config": "^3.0.1",
+    "@angular-builders/custom-webpack": "^7.0.1",
+    "@angular-builders/dev-server": "^7.0.1",
     "@angular-devkit/build-angular": "~0.13.0",
     "@angular/cli": "~7.3.9",
     "@angular/compiler-cli": "~7.2.0",

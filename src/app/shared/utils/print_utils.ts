@@ -2,7 +2,7 @@ import { BigNumber, ContractWrappers, Order, OrderInfo, OrderStatus, SignedOrder
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DecodedLogArgs, LogWithDecodedArgs, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
-import * as ora from 'ora';
+// import * as ora from 'ora';
 // import ora = require('ora');
 // const ora = require('ora');
 
@@ -186,23 +186,28 @@ export class PrintUtils {
         PrintUtils.printHeader('Allowances');
         PrintUtils.pushAndPrint(table, flattenedAllowances);
     }
+
     public async awaitTransactionMinedSpinnerAsync(
         message: string,
         txHash: string,
     ): Promise<TransactionReceiptWithDecodedLogs> {
-        const spinner = ora(`${message}: ${txHash}`).start();
-        if (!spinner.isSpinning) {
-            console.log(message, txHash);
-        }
+
+        // const spinner = ora(`${message}: ${txHash}`).start();
+        // if (!spinner.isSpinning) {
+
+        console.log(message, txHash);
+        // }
         try {
             const receipt = await this._web3Wrapper.awaitTransactionMinedAsync(txHash);
-            receipt.status === 1 ? spinner.stop() : spinner.fail(message);
+            receipt.status === 1 ? console.log(receipt.status) : console.error("failed", message);
             return receipt;
         } catch (e) {
-            spinner.fail(message);
+            console.error(e);
             throw e;
         }
+
     }
+
     public printTransaction(
         header: string,
         txReceipt: TransactionReceiptWithDecodedLogs,
