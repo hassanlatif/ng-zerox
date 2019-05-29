@@ -40,32 +40,31 @@ export class ZeroXService {
     const maker = '0x00c97b9efa7ed5712b835f2635a388cf8631f109';
     const taker = NULL_ADDRESS;
 
-    const zrxTokenAddress = contractAddresses.zrxToken;
+    // const zrxTokenAddress = contractAddresses.zrxToken;
     const etherTokenAddress = contractAddresses.etherToken;
+    console.log(etherTokenAddress);
     const printUtils = new PrintUtils(
       web3Wrapper,
       contractWrappers,
       { maker, taker },
-      { WETH: etherTokenAddress, ZRX: zrxTokenAddress },
+      { WETH: etherTokenAddress },
     );
     printUtils.printAccounts();
 
     // the amount the maker is selling of maker asset
-    const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(5), DECIMALS);
+    const makerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.1), DECIMALS);
     // the amount the maker wants of taker asset
     const takerAssetAmount = Web3Wrapper.toBaseUnitAmount(new BigNumber(0.01), DECIMALS);
     // 0x v2 uses hex encoded asset data strings to encode all the information needed to identify an asset
-    const makerAssetData = assetDataUtils.encodeERC20AssetData(zrxTokenAddress);
+    const makerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
     const takerAssetData = assetDataUtils.encodeERC20AssetData(etherTokenAddress);
-    let txHash;
-    let txReceipt;
 
     // Allow the 0x ERC20 Proxy to move ZRX on behalf of makerAccount
-    const makerZRXApprovalTxHash = await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
-      zrxTokenAddress,
+    const makerWETHApprovalTxHash = await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
+      etherTokenAddress,
       maker,
     );
-    await printUtils.awaitTransactionMinedSpinnerAsync('Maker ZRX Approval', makerZRXApprovalTxHash);
+    await printUtils.awaitTransactionMinedSpinnerAsync('Maker WETH Approval', makerWETHApprovalTxHash);
 
     // Set up the Order and fill it
     const randomExpiration = getRandomFutureDateInSeconds();

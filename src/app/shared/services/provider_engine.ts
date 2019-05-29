@@ -9,7 +9,7 @@ export const mnemonicWallet = new MnemonicWalletSubprovider({
 });
 
 declare global {
-    interface Window { web3 : any}
+    interface Window { web3: any }
 }
 
 window.web3 = window.web3 || {};
@@ -22,7 +22,7 @@ export const pe = new Web3ProviderEngine();
 
 if (window.web3.currentProvider.isMetaMask)
     pe.addProvider(new MetamaskSubprovider(window.web3.currentProvider));
-else 
+else
     pe.addProvider(new SignerSubprovider(window.web3.currentProvider));
 // Use an RPC provider to route all other requests
 pe.addProvider(new RPCSubprovider(NETWORK_CONFIGS.rpcUrl));
