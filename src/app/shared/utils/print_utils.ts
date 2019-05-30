@@ -199,7 +199,7 @@ export class PrintUtils {
         // }
         try {
             const receipt = await this._web3Wrapper.awaitTransactionMinedAsync(txHash);
-            receipt.status === 1 ? console.log(receipt.status) : console.error("failed", message);
+            receipt.status === 1 ? console.log(receipt) : console.error("failed", message);
             return receipt;
         } catch (e) {
             console.error(e);
