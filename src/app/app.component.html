@@ -3,21 +3,52 @@
   <h1>
     {{ title }}!
   </h1>
-  <!-- <div>
-    <button (click)="createOrder()">Test create order</button>
-  </div>
-  <div>
-    <button (click)="fillOrder()">Test fill order</button>
-  </div>
-  <hr> -->
-  <div>
-    <button (click)="createNFTOrder()">Test create NFT order</button>
-  </div>
-  <div>
-    <button (click)="fillNFTOrder()">Test fill NFT order</button>
-  </div>
+  <hr style="border: solid 1px;">
+  <div class="container">
 
+    <div class="row m-5">
+      <div class="col">
+        <button class="btn btn-primary" (click)="createOrder()">Test create order</button>
+      </div>
+      <div class="col">
+        <h3>
+          Non-NFT Orders
+        </h3>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" (click)="fillOrder()">Test fill order</button>
+      </div>
+    </div>
+
+    <div class="row m-5">
+      <div class="col">
+        <button class="btn btn-primary" (click)="createNFTOrder()">Test create NFT order</button>
+      </div>
+      <div class="col">
+        <h3>
+          NFT Orders
+        </h3>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" (click)="fillNFTOrder()">Test fill NFT order</button>
+      </div>
+    </div>
+    <div class="row m-5">
+      <div class="col">
+        <button class="btn btn-primary" (click)="createMultiAssetOrder()">Test create Multi Asset order</button>
+      </div>
+      <div class="col">
+        <div class="h3">
+          Multi Asset Order
+        </div>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" (click)="fillMutliAssetOrder()">Test fill Multi Asset order</button>
+      </div>
+    </div>
+  </div>
 </div>
+
 
 
 <router-outlet></router-outlet>

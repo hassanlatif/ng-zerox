@@ -14,7 +14,11 @@ export class AppComponent {
   // orderHashHex: any;
   signedNFTOrder: any;
   NFTOrderHashHex: any;
-  tokenId: any;
+  NFTTokenId: any;
+
+  signedMultiAssetOrder: any;
+  multiAssetOrderHashHex: any;
+  multiAssetTokenIds: any;
 
 
   constructor(private zeroX: TestERC721ZeroXService) {
@@ -39,12 +43,23 @@ export class AppComponent {
       console.log(result);
       this.signedNFTOrder = result.signedOrder;
       this.NFTOrderHashHex = result.orderHashHex;
-      this.tokenId = result.tokenId;
+      this.NFTTokenId = result.tokenId;
       console.log("End")
     },
       (error) => console.error(error)
     );
-  }  
+  }
+
+  createMultiAssetOrder() {
+    console.log("Start");
+    this.zeroX.createMultiAssetOrder().then((result) => {
+      console.log(result);
+      this.multiAssetTokenIds = result.tokenIds;
+      this.multiAssetOrderHashHex = result.orderHashHex;
+      this.signedMultiAssetOrder = result.signedOrder;
+    });
+
+  }
 
   // fillOrder() {
   //   console.log("Start");
@@ -55,9 +70,17 @@ export class AppComponent {
 
   fillNFTOrder() {
     console.log("Start");
-    this.zeroX.fillNFTOrder(this.signedNFTOrder, this.NFTOrderHashHex, this.tokenId).then(() => 
-    console.log("End"), 
-    (error) => console.error(error));
+    this.zeroX.fillNFTOrder(this.signedNFTOrder, this.NFTOrderHashHex, this.NFTTokenId).then(() =>
+      console.log("End"),
+      (error) => console.error(error));
+  }
+
+  fillMutliAssetOrder() {
+    console.log("Start");
+    this.zeroX.fillMultiAssetOrder(this.signedMultiAssetOrder, this.multiAssetOrderHashHex, this.multiAssetTokenIds).then(()=>
+    console.log("End"),
+    (error)=> console.log(error));
+    
   }
 
 }

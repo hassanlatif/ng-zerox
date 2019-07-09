@@ -2,11 +2,7 @@ import { BigNumber, ContractWrappers, Order, OrderInfo, OrderStatus, SignedOrder
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { DecodedLogArgs, LogWithDecodedArgs, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import * as _ from 'lodash';
-// import * as ora from 'ora';
-// import ora = require('ora');
-// const ora = require('ora');
-
-import { DECIMALS, UNLIMITED_ALLOWANCE_IN_BASE_UNITS } from '../configs/constants';
+import { UNLIMITED_ALLOWANCE_IN_BASE_UNITS, DECIMALS } from '../configs/constants';
 
 // tslint:disable-next-line:no-var-requires
 const Table = require('cli-table');

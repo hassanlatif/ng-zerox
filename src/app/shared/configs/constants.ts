@@ -6,6 +6,8 @@ export const ONE_SECOND_MS = 1000;
 export const ONE_MINUTE_MS = ONE_SECOND_MS * 60;
 // tslint:disable-next-line:custom-no-magic-numbers
 export const TEN_MINUTES_MS = ONE_MINUTE_MS * 10;
+export const ONE_HOUR = TEN_MINUTES_MS * 60;
+export const ONE_DAY = ONE_HOUR * 24; 
 // tslint:disable-next-line:custom-no-magic-numbers
 export const UNLIMITED_ALLOWANCE_IN_BASE_UNITS = new BigNumber(2).pow(256).minus(1);
 // tslint:disable-next-line:custom-no-magic-numbers
